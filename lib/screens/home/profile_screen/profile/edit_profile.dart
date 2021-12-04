@@ -9,7 +9,19 @@ import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen(
+      {Key? key,
+      required this.vendorName,
+      required this.vendorContactNumber,
+      required this.enableWhatsappNotification,
+      required this.vendorEmail,
+      required this.vendorWhatsappNumber})
+      : super(key: key);
+  final String vendorName;
+  final String vendorContactNumber;
+  final String vendorEmail;
+  final String vendorWhatsappNumber;
+  final String enableWhatsappNotification;
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -39,7 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
-      Map data = await HttpController().get(editProfileUrl, body: {
+      Map d = {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
         'vendorName': name,
@@ -47,39 +59,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'vendorContactNumber': number,
         'vendorEmail': email,
         'vendorWhatsappNumber': whatsapp,
-        'enableWhatsappNotification': _whatsappNotification.toString(),
-      });
-      setState(() {
-        _progressVisible = false;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  _data() async {
-    try {
-      setState(() {
-        _progressVisible = true;
-      });
-      Map user = await SharedData().getUser();
-      Map data = await HttpController().get(getProfileUrl, body: {
+        'enableWhatsappNotification': _whatsappNotification ? '1' : '0',
+      };
+      print(d);
+      Map data = await HttpController().post(editProfileUrl, {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
+        'vendorName': name,
+        'vendorCountryCode': '+91',
+        'vendorContactNumber': number,
+        'vendorEmail': email,
+        'vendorWhatsappNumber': whatsapp,
+        'enableWhatsappNotification': _whatsappNotification ? '1' : '0',
       });
+
       setState(() {
         _progressVisible = false;
       });
 
       if (data.isNotEmpty) {
-        setState(() {
-          _name.text = data['response']['vendorName'];
-          _number.text = data['response']['vendorContactNumber'];
-          _email.text = data['response']['vendorEmail'];
-          _whatsapp.text = data['response']['vendorWhatsappNumber'];
-          print(data['response']['enableWhatsappNotification']);
-          // _whatsappNotification = data['response']['enabledWhatsappNotification'];
-        });
+        print(data);
+        Navigator.pop(context);
       }
     } catch (e) {
       print(e);
@@ -88,8 +88,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void initState() {
+    setState(() {
+      _name.text = widget.vendorName;
+      _number.text = widget.vendorContactNumber;
+      _email.text = widget.vendorEmail;
+      _whatsapp.text = widget.vendorWhatsappNumber;
+      // print(data['response']['enableWhatsappNotification'].runtimeType);
+      _whatsappNotification =
+          widget.enableWhatsappNotification == '0' ? false : true;
+    });
     super.initState();
-    _data();
   }
 
   @override

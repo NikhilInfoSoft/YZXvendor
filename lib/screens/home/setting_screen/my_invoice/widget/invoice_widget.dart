@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import '../invoice_detail_screen.dart';
 
 class InvoiceWidget extends StatelessWidget {
-  const InvoiceWidget({Key? key}) : super(key: key);
-
+  const InvoiceWidget({Key? key, this.invoiceData}) : super(key: key);
+  final Map? invoiceData;
   @override
   Widget build(BuildContext context) {
+    print(invoiceData);
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => InvoiceDetailsScreen(),
+            builder: (context) => InvoiceDetailsScreen(
+              invoiceNumber: invoiceData!['invoiceNumber'].toString(),
+            ),
           ),
         );
       },
@@ -35,7 +38,7 @@ class InvoiceWidget extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "Sponsored",
+                  'Invoice Number: ${invoiceData!['invoiceNumber'].toString()}',
                   style: TextStyle(
                     color: Color(0xff666666),
                     fontSize: 14,
@@ -56,7 +59,7 @@ class InvoiceWidget extends StatelessWidget {
               ],
             ),
             Text(
-              "01-Aug-2021",
+              invoiceData!['created_at'],
               style: TextStyle(
                 color: Color(0xff666666),
                 fontSize: 12,
@@ -67,7 +70,7 @@ class InvoiceWidget extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "599.00",
+                  '${invoiceData!['amount'].toString()} Rs',
                   style: TextStyle(
                     color: Color(0xff252733),
                     fontSize: 14,

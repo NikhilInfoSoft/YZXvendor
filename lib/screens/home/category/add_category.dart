@@ -1,13 +1,16 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:xyx_vendor/common/widget/app_edit_text_widget.dart';
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
+import 'package:http/http.dart' as http;
 import 'package:xyx_vendor/screens/home/category/widget/menu_widget.dart';
 import 'package:xyx_vendor/screens/home/store_screen/widget/image_selected_widget.dart';
 import 'package:xyx_vendor/screens/home/store_screen/widget/image_selection_widget.dart';
@@ -29,7 +32,6 @@ class AddCategoryScreen extends StatefulWidget {
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
   bool _progressVisible = false;
-  bool _networkImage = false;
   String networkImage = '';
   ImagePicker _picker = ImagePicker();
   File? sourceFile;
@@ -48,7 +50,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
       if (file != null) {
         sourceFile = File(file.path);
-        _networkImage = false;
+
         setState(() {});
       }
     } catch (e) {
@@ -72,16 +74,19 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
-      Map data = await HttpController().multiPart(addCategoryUrl, {
-        'vendorId': user['id'].toString(),
-        'vendorToken': user['token'].toString(),
-        'categoryName': name,
-        'categoryImage': sourceFile,
-      });
+      Map data = await HttpController().multiPart(
+          widget.edit && widget.data != null ? editCategoryUrl : addCategoryUrl,
+          {
+            'vendorId': user['id'].toString(),
+            if (widget.edit && widget.data != null) 'categoryId': widget.id,
+            'vendorToken': user['token'].toString(),
+            'categoryName': name,
+            'categoryImage': sourceFile,
+          });
       setState(() {
         _progressVisible = false;
       });
-
+Navigator.pop(context);
       if (data.isNotEmpty) {
         setState(() {
           sourceFile = null;
@@ -93,46 +98,66 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     }
   }
 
-  _edit() async {
-    try {
-      var name = _name.text;
+  // _edit() async {
+  //   try {
+  //     var name = _name.text;
 
-      if (name == '') {
-        Fluttertoast.showToast(msg: 'Please fill all the fields..!!');
-        return;
-      } else if (sourceFile == null) {
-        Fluttertoast.showToast(msg: 'Please select proper category image..!!');
-        return;
-      }
+  //     if (name == '') {
+  //       Fluttertoast.showToast(msg: 'Please fill all the fields..!!');
+  //       return;
+  //     } else if (sourceFile == null) {
+  //       Fluttertoast.showToast(msg: 'Please select proper category image..!!');
+  //       return;
+  //     }
 
-      setState(() {
-        _progressVisible = true;
-      });
-      Map user = await SharedData().getUser();
-      Map data = await HttpController().multiPart(editCategoryUrl, {
-        'vendorId': user['id'].toString(),
-        'vendorToken': user['token'].toString(),
-        'categoryId': widget.id,
-        'categoryName': name,
-        'categoryImage': sourceFile,
-      });
-      setState(() {
-        _progressVisible = false;
-      });
-    } catch (e) {
-      print(e);
-    }
+  //     setState(() {
+  //       _progressVisible = true;
+  //     });
+  //     Map user = await SharedData().getUser();
+  //     print(user);
+
+  //     Map da = await HttpController().multiPart(editCategoryUrl, {
+  //       'vendorId': user['id'].toString(),
+  //       'vendorToken': user['token'].toString(),
+  //       'categoryId': widget.id,
+  //       'categoryName': name,
+  //       'categoryImage': sourceFile,
+  //     });
+  //     print(da);
+  //     setState(() {
+  //       _progressVisible = false;
+  //     });
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  Future<void> urlToFile(String imageUrl) async {
+    setState(() {
+      _progressVisible = true;
+    });
+    var rng = new Random();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File file = new File('$tempPath' + (rng.nextInt(100)).toString() + '.jpg');
+    http.Response response = await http.get(Uri.parse(imageUrl));
+
+    await file.writeAsBytes(response.bodyBytes);
+
+    setState(() {
+      _progressVisible = false;
+
+      _name.text = widget.data!['categoryName'];
+      networkImage = widget.data!['categoryImage'];
+      sourceFile = file;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     if (widget.edit && widget.data != null) {
-      setState(() {
-        _name.text = widget.data!['categoryName'];
-        networkImage = widget.data!['categoryImage'];
-        _networkImage = true;
-      });
+      urlToFile(widget.data!['categoryImage']);
     }
   }
 
@@ -159,7 +184,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           children: [
             GestureDetector(
               onTap: _imagePicker,
-              child: sourceFile == null && !_networkImage
+              child: sourceFile == null
                   ? ImageSelectionWidget(
                       imageSize: "upload JPG, PNG",
                       title: "Add Category Image",
@@ -168,7 +193,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       imageSize: "upload JPG, PNG",
                       title: "Add Category Image",
                       file: sourceFile,
-                      networkImage: _networkImage,
+                      networkImage: false,
                       image: networkImage,
                     ),
             ),
@@ -191,7 +216,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             ),
             Spacer(),
             GestureDetector(
-              onTap: widget.edit ? _edit : _create,
+              onTap: _create,
               child: Container(
                 width: 312,
                 height: 50,

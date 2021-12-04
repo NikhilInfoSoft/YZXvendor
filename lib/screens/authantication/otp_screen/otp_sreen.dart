@@ -8,6 +8,7 @@ import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
 import 'package:xyx_vendor/screens/authantication/splash_screen/splash_screen.dart';
+import 'package:xyx_vendor/screens/home/home_screen/home_screen.dart';
 import 'package:xyx_vendor/screens/home/store_screen/create_store_screen.dart';
 
 class OTPScreen extends StatelessWidget {
@@ -62,6 +63,7 @@ class _OTPDesignState extends State<_OTPDesign> {
 
   _verify() async {
     try {
+      print('verifty');
       var otp = _pin.text;
 
       if (otp == '' || otp.length != 4) {
@@ -72,23 +74,25 @@ class _OTPDesignState extends State<_OTPDesign> {
       setState(() {
         _progressVisible = true;
       });
+      print('>>>$otp');
+      print(widget.vendorId);
+      print(widget.vendorToken);
       Map data = await HttpController().post(otpVerificationUrl, {
-        'vendorId': widget.vendorId,
-        'vendorToken': widget.vendorToken,
+        // 'vendorId': widget.vendorId,
+        // 'vendorToken': widget.vendorToken,
         'vendorOtp': otp,
       });
+
       setState(() {
         _progressVisible = false;
       });
-
       if (data.isNotEmpty && data['status'] == 1) {
         if (widget.signup) {
           if (await SharedData().setLogged(true) &&
               await SharedData().setUser(
                 widget.vendorId.toString(),
                 widget.vendorToken.toString(),
-              )) {
-            Navigator.pushAndRemoveUntil(
+              )  ){   Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (context) => CreateStoreScreen(),
@@ -97,6 +101,21 @@ class _OTPDesignState extends State<_OTPDesign> {
             );
           }
         }
+        
+        // else{
+        //   await SharedData().setLogged(true);
+        //     await SharedData().setUser(
+        //         widget.vendorId.toString(),
+        //         widget.vendorToken.toString(),
+        //       );
+        //    Navigator.pushAndRemoveUntil(
+        //       context,
+        //       MaterialPageRoute(
+        //         builder: (context) => HomeScreen(),
+        //       ),
+        //       (route) => false,
+        //     );
+        // }
       }
     } catch (e) {
       print(e);
@@ -113,6 +132,7 @@ _resendOtp() async {
         'vendorContactNumber':widget.vendorContactNumber,
         'vendorCountryCode':'+91',
       });
+
       setState(() {
         _progressVisible = false;
       });
@@ -126,7 +146,8 @@ _resendOtp() async {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("An error occurred"),
                 ));
-      print(e);
+                
+      print('????$e');
     }
   }
 

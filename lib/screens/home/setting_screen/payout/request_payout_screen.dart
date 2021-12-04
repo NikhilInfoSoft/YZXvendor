@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xyx_vendor/common/widget/app_droupdown_widget.dart';
@@ -6,6 +8,7 @@ import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
+import 'package:http/http.dart' as http;
 
 class RequestPayOutScreen extends StatefulWidget {
   const RequestPayOutScreen({Key? key}) : super(key: key);
@@ -19,8 +22,8 @@ class _RequestPayOutScreenState extends State<RequestPayOutScreen> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController _commissionController = TextEditingController();
   List<String> paymentList = ["HDFC Bank", "jonxyz@hdfc.com"];
-  String paymentMethod ='';
-    _createPayout() async {
+  String paymentMethod = '';
+  _createPayout() async {
     try {
       var amount = _amountController.text;
       var commission = _commissionController.text;
@@ -34,34 +37,44 @@ class _RequestPayOutScreenState extends State<RequestPayOutScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
-      print(user);
+      // http.Response res= await http.post(Uri.parse(getVendorPayoutUrl),body: {
+      //   'token': '\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu',
+      //   'vendorId': user['id'].toString(),
+      //   'requestAmount': amount,
+      //   'totalCommission': commission,
+      //   'paymentMethod': paymentMethod,
+      // });
       Map data = await HttpController().post(getVendorPayoutUrl, {
-        'token': '\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu',
+        'token':
+            '\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu',
         'vendorId': user['id'].toString(),
         'requestAmount': amount,
         'totalCommission': commission,
         'paymentMethod': paymentMethod,
       });
+
       setState(() {
         _progressVisible = false;
       });
-
+      // Map data = json.decode(res.body);
+      print(data);
+// print(json.decode(res.body));
       if (data.isNotEmpty) {
         _amountController.text = '';
-        _commissionController.text='';
-        paymentMethod='';
+        _commissionController.text = '';
+        paymentMethod = '';
       }
     } catch (e) {
       print(e);
     }
   }
 
-
-@override
+  @override
   void initState() {
-    paymentMethod =paymentList[0];
+    paymentMethod = paymentList[0];
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(

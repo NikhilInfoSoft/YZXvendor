@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xyx_vendor/Localizations/localization.dart';
@@ -8,6 +10,7 @@ import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
+import 'package:http/http.dart' as http;
 
 class StoreLocationScreen extends StatefulWidget {
   const StoreLocationScreen({Key? key}) : super(key: key);
@@ -39,7 +42,8 @@ class _StoreLocationScreenState extends State<StoreLocationScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
-     await HttpController().post(saveStoreLocationUrl, {
+
+       Map data = await HttpController().post(saveStoreLocationUrl, {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
         'storeCounty': country,
@@ -48,6 +52,7 @@ class _StoreLocationScreenState extends State<StoreLocationScreen> {
         'storeLatitude': _latitude.toString(),
         'storeLongitude': _longitude.toString(),
       });
+      print(data);
       setState(() {
         _progressVisible = false;
       });

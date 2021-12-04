@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:xyx_vendor/Localizations/localization.dart';
 import 'package:xyx_vendor/common/app_colors.dart';
 import 'package:xyx_vendor/common/widget/app_edit_text_widget.dart';
@@ -9,9 +10,11 @@ import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
+import 'package:xyx_vendor/screens/home/category/widget/menu_widget.dart';
 import 'package:xyx_vendor/screens/home/store_screen/store_location_screen.dart';
 import 'package:xyx_vendor/screens/home/store_screen/widget/image_selection_widget.dart';
 
+import 'widget/image_selected_widget.dart';
 import 'widget/store_progress_widget.dart';
 
 class CreateStoreScreen extends StatelessWidget {
@@ -37,8 +40,36 @@ class _CreateStoreDesignState extends State<_CreateStoreDesign> {
   bool _progressVisible = false;
   TextEditingController _name = TextEditingController();
   TextEditingController _gst = TextEditingController();
-  late File webLogo;
-  late File appLogo;
+   File? webLogo;
+   File? appLogo;
+
+  ImagePicker _picker = ImagePicker();
+
+_imagePicker(int i) async {
+    try {
+      ImageSource? source = await showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) => ImageSourceMenuWidget(),
+      );
+
+      if (source == null) return;
+      XFile? file = await _picker.pickImage(source: source);
+
+      if (file != null) {
+        if (i == 0) {
+          webLogo = File(file.path);
+        } else {
+          appLogo = File(file.path);
+        }
+        setState(() {
+          print(webLogo!.path);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   _create() async {
     try {
@@ -65,16 +96,16 @@ class _CreateStoreDesignState extends State<_CreateStoreDesign> {
       setState(() {
         _progressVisible = false;
       });
-
+print(data);
       if (data.isNotEmpty) {
-        if (widget.create) {
-          Navigator.pushReplacement(
+        // if (widget.create) {
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => StoreLocationScreen(create: true),
             ),
           );
-        }
+        // }
       }
     } catch (e) {
       print(e);
@@ -140,14 +171,34 @@ class _CreateStoreDesignState extends State<_CreateStoreDesign> {
               alignment: WrapAlignment.spaceBetween,
               spacing: 10,
               children: [
-                ImageSelectionWidget(
-                  imageSize: AppLocalizations.instance.text("390x140pxPNG"),
-                  title: AppLocalizations.instance.text("uploadWebLogo"),
-                ),
-                ImageSelectionWidget(
-                  imageSize: AppLocalizations.instance.text("512x512pxPNG"),
-                  title: AppLocalizations.instance.text("uploadAppLogo"),
-                ),
+               GestureDetector(
+                    onTap: () {
+                      _imagePicker(0);
+                    },
+                    child: webLogo!=null?
+                    ImageSelectedWidget(
+                      imageSize: AppLocalizations.instance.text("390x140pxPNG"),
+                      title: AppLocalizations.instance.text("uploadWebLogo"),
+                      file: webLogo!,)
+                    : ImageSelectionWidget(
+                      imageSize: AppLocalizations.instance.text("390x140pxPNG"),
+                      title: AppLocalizations.instance.text("uploadWebLogo"),
+                    ),
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                      _imagePicker(1);
+                    },
+                    child: appLogo!=null?
+                    ImageSelectedWidget(
+                      imageSize: AppLocalizations.instance.text("512x512pxPNG"),
+                      title: AppLocalizations.instance.text("uploadAppLogo"),
+                      file: appLogo!,)
+                    : ImageSelectionWidget(
+                      imageSize: AppLocalizations.instance.text("512x512pxPNG"),
+                      title: AppLocalizations.instance.text("uploadAppLogo"),
+                    ),
+                  ),
                 // ImageSelectionWidget(
                 //   imageSize:
                 //       AppLocalizations.instance.text("1300x700pxPNGimage"),

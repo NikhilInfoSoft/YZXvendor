@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:xyx_vendor/common/app_colors.dart';
 import 'package:xyx_vendor/common/widget/app_edit_text_widget.dart';
 import 'package:xyx_vendor/screens/home/category/add_category.dart';
+import 'package:xyx_vendor/screens/home/category/add_sub_category.dart';
 
 class MenuWidget extends StatefulWidget {
   final String? id;
-  final bool category;
+  final bool? category;
   final Map? data;
+  final Function(String id)? delete;
+  final List? categoryList;
   const MenuWidget({
     Key? key,
     this.id,
-    this.category = true,
+    this.category,
+    this.delete,
+   required this.categoryList,
     this.data,
   }) : super(key: key);
 
@@ -62,7 +67,7 @@ class _MenuWidgetState extends State<MenuWidget> {
           ),
           GestureDetector(
             onTap: () {
-              if (widget.category) {
+              if (widget.category!) {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -71,6 +76,19 @@ class _MenuWidgetState extends State<MenuWidget> {
                       edit: true,
                       id: widget.id ?? '',
                       data: widget.data ?? {},
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddSubCategoryScreen(
+                      edit: true,
+                      id: widget.id ?? '',
+                      data: widget.data ?? {},
+                      categoryList: widget.categoryList!,
                     ),
                   ),
                 );
@@ -89,17 +107,23 @@ class _MenuWidgetState extends State<MenuWidget> {
               ),
             ),
           ),
-          Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                "Delete",
-                style: TextStyle(
-                  color: Color(0xff523291),
-                  fontSize: 16,
-                  fontFamily: "Mulish",
-                  fontWeight: FontWeight.w700,
-                ),
-              )),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              widget.delete!(widget.id!);
+            },
+            child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "Delete",
+                  style: TextStyle(
+                    color: Color(0xff523291),
+                    fontSize: 16,
+                    fontFamily: "Mulish",
+                    fontWeight: FontWeight.w700,
+                  ),
+                )),
+          ),
         ],
       ),
     );

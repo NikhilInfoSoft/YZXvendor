@@ -14,19 +14,23 @@ class DashboardScreen extends StatelessWidget {
     return AppScaffold(
       child: Stack(
         children: [
-          Container(
-            width: 360,
-            height: 178,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xffcf198c),
-                  Color(0xff602f90),
-                  Color(0xff523291)
-                ],
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 2.0, horizontal: 16.0),
+            child: Container(
+              width: 360,
+              height: 178,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xffcf198c),
+                    Color(0xff602f90),
+                    Color(0xff523291)
+                  ],
+                ),
               ),
             ),
           ),
@@ -34,9 +38,9 @@ class DashboardScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                width: MediaQuery.of(context).size.width,
+                // width: MediaQuery.of(context).size.width,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
@@ -130,7 +134,6 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     SizedBox(
                       height: 25,
                     ),
@@ -162,7 +165,10 @@ class DashboardScreen extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        OrderShortingWidget(text: "Pending",isSelected: true,),
+                        OrderShortingWidget(
+                          text: "Pending",
+                          isSelected: true,
+                        ),
                         OrderShortingWidget(text: "Accepted"),
                         OrderShortingWidget(text: "Shipped"),
                       ],
@@ -173,7 +179,6 @@ class DashboardScreen extends StatelessWidget {
                     OrderItemWidget(orderStatus: OrderStatus.Pending),
                     OrderItemWidget(orderStatus: OrderStatus.Accepted),
                     OrderItemWidget(orderStatus: OrderStatus.Shipped),
-
                   ],
                 ),
               ),

@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:xyx_vendor/common/app_colors.dart';
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
+import 'package:http/http.dart'as http;
 
 class PreOrderSettingScreen extends StatefulWidget {
   const PreOrderSettingScreen({Key? key}) : super(key: key);
@@ -22,11 +25,12 @@ class _PreOrderSettingScreenState extends State<PreOrderSettingScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
-     await HttpController().post(updatePreOrderStatusUrl, {
+     http.Response response =await http.post(Uri.parse(updatePreOrderStatusUrl),body: {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
         'isPreOrder': isEnableProModel ? '1' : '0',
       });
+      print(json.decode(response.body));
       setState(() {
         _progressVisible = false;
       });

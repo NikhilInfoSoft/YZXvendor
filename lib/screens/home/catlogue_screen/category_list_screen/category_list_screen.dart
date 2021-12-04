@@ -40,6 +40,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
       if (data.isNotEmpty) {
         _categoryList = data['response'];
+        print(_categoryList);
       }
     } catch (e) {
       print(e);
@@ -50,6 +51,33 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   void initState() {
     super.initState();
     _data();
+  }
+
+  Future<void> delete(String id) async {
+    try {
+      setState(() {
+        _progressVisible = true;
+      });
+      Map data;
+      Map user = await SharedData().getUser();
+
+      data = await HttpController().post(deleteCategoryUrl, {
+        'vendorId': user['id'].toString(),
+        'vendorToken': user['token'].toString(),
+        'categoryId': id
+      });
+
+      setState(() {
+        _progressVisible = false;
+      });
+
+      if (data.isNotEmpty) {
+        // _categoryList = data['response'];
+        print(data);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -72,6 +100,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                   _categoryList[index]['categoryName'].toString(),
                   _categoryList[index]['categoryImage'].toString(),
                   _categoryList[index],
+                  delete,
+                  _categoryList,
                 );
               }),
             ),
@@ -87,17 +117,19 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         builder: (context) => AddCategoryScreen(),
                       ),
                     );
-                    _data();
+                    // _data();
                   },
                   child: widgetList['AddNewCategoryWidget']),
             ),
             GestureDetector(
               onTap: () async {
+                print(_categoryList);
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AddSubCategoryScreen(
                       categoryList: _categoryList,
+                      edit: false,
                     ),
                   ),
                 );
@@ -110,18 +142,17 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     );
   }
 
-  Widget _categoryTile(
-    String id,
-    String name,
-    String image,
-    Map data,
-  ) {
+  Widget _categoryTile(String id, String name, String image, Map data,
+      Function(String id) delete, List _categoryList) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SubCategoryListScreen(category: id),
+            builder: (context) => SubCategoryListScreen(
+              category: id,
+              categoryList: _categoryList,
+            ),
           ),
         );
       },
@@ -176,6 +207,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                               category: true,
                               data: data,
                               id: id,
+                              delete: delete,
+                              categoryList: [],
                             ),
                           );
                         },

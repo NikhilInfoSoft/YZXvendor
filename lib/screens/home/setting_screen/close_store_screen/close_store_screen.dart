@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
@@ -25,16 +28,19 @@ class _CloseStoreScreenState extends State<CloseStoreScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
-      Map data = await HttpController().post(updateStoreStatusUrl, {
+      http.Response res = await http.post(Uri.parse(updateStoreStatusUrl),body: {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
         'vendorStatus': status,
       });
+      Map data = json.decode(res.body);
       setState(() {
         _progressVisible = false;
       });
 
       if (data.isNotEmpty) {
+          print(data);
+
         if (status == '4') {
           showDialog(
               context: context,

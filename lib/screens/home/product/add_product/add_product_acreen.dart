@@ -6,7 +6,7 @@
 // import 'add_product_form_acreen.dart';
 
 // class AddProductScreen extends StatefulWidget {
-//   const AddProductScreen({Key? key}) : super(key: key);
+//   const AddProductScreen({Key key}) : super(key: key);
 
 //   @override
 //   _AddProductScreenState createState() => _AddProductScreenState();

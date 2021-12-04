@@ -68,8 +68,10 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
 
   _addproduct() async {
     try {
-      var categoryId = _categoryList.firstWhere((element) =>
-          element['categoryName'] == selectedCategory)['categoryId']; //
+      var categoryId = _categoryList
+          .firstWhere((element) => element['categoryName'] == selectedCategory)[
+              'categoryId']
+          .toString(); //
       var subCategoryId = _subCatList.firstWhere((element) {
         if (selectedSubCategory != null) {
           return element['subCategoryName'] == selectedSubCategory;
@@ -77,7 +79,7 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
           return element['subCategoryName'] ==
               subCatList.first['subCategoryName'];
         }
-      })['subCategoryId']; //
+      })['subCategoryId'].toString(); //
       var productName = productNameControlleer.text; //
       var productPrice = productPriceController.text; //
       var discountedProductPrice = discountedProductPriceController.text; //
@@ -85,13 +87,10 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
       var productShortDescription = productShortDiscriptionController.text; //
       var productLongDescription = productLongDiscriptionController.text; //
       var productSpecification = productSpecificationController.text; //
-      var productIsInStock = isEnableStock ? 1 : 0; //
+      var productIsInStock = isEnableStock ? '1' : '0'; //
       var productStock = productStockController.text; //
       var productFeaturedImage = featuredImage; //
 
-      setState(() {
-        _progressVisible = true;
-      });
       if (categoryId == '' ||
           subCategoryId == '' ||
           productName == '' ||
@@ -111,10 +110,10 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
         Fluttertoast.showToast(msg: 'Please select proper product image..!!');
         return;
       }
-
       setState(() {
         _progressVisible = true;
       });
+
       Map user = await SharedData().getUser();
 
       Map data = await HttpController().multiPart(addProductUrl, {
@@ -134,9 +133,6 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
         "productFeaturedImage": featuredImage
       });
 
-      setState(() {
-        _progressVisible = false;
-      });
       if (data.isNotEmpty) {
         productNameControlleer.text = '';
         productPriceController.text = '';
@@ -151,6 +147,10 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
         selectedSubCategory = '';
         featuredImage = null;
       }
+
+      setState(() {
+        _progressVisible = false;
+      });
     } catch (e) {
       Fluttertoast.showToast(msg: 'Please fill all the fields..!!');
       return;

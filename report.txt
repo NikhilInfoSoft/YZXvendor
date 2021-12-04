@@ -1,0 +1,71 @@
+
+//<<<<<<<<<<<<<<<<<<<<<missing api>>>>>>>>>>>>>>>>>>>//
+get products api missing
+UPDATE STORE IMAGES API MISSING
+In home screen get sales value get pending orders get total sales pending order(will be implemented after get order apis is enabled)
+get order apis
+vendor edit profile should be post request ,it is get request
+get my balance in payout screen
+upload documnet api does not exist
+get reports in reports screen
+get current store status in close and delete store
+get invoices api
+buy sponsored and featured plan payment api's
+qr code missing
+set print setting missing
+set shop timings missing
+get pre order status
+save shipping configuration
+In add coupon api status filed is absent configure properly as per ui
+delete coupon 
+edit coupon
+delete tax list
+edit tax list
+tawk link toimplement in chat with admin api
+get notifications in notifications screen
+in help & support what to do in chat with us button
+what to do in language screen
+remove vendor id and vendor token from otp verify url to implement forget password and after sign up to verify otp
+forget password screen and api missing
+
+
+
+
+//<<<<<<<<<<<<<<<missing functionality>>>>>>>>>>>>>//
+add product attribute function not working not adding not deleting
+vendor save location (there is button to enable for listing on zyx app) and it's response is not taken on api, configure api to make sure this input is also there as request
+edit sub category screen missing
+
+
+
+
+
+//<<<<<<<<<<<<<<<<implemented successfully>>>>>>>>>>>>>>>//
+get category
+get-faq
+close & delete store
+delete sub category
+delete category
+add product
+login
+set pre order status
+add bank details
+add taxt list
+add coupon
+set delivery distance
+get coupon list
+save store info
+add upi details
+get vendorsponsoredplans
+get bank details
+get vendor invoices
+get upi details
+get profile
+add category
+update category
+get payouts using filter
+get vendor invoice details
+edit category
+get invoices using filter and get invoice details
+add subcategory
+change location store

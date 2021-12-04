@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 import 'package:xyx_vendor/controller/httpController.dart';
 import 'package:xyx_vendor/controller/shared_data.dart';
@@ -15,28 +19,28 @@ class SponsoredScreen extends StatefulWidget {
 }
 
 class _SponsoredScreenState extends State<SponsoredScreen> {
-
-bool _progressVisible =false;
+  bool _progressVisible = false;
   List sponsoredPlanList = [];
- _data() async {
+  _data() async {
     try {
       sponsoredPlanList.clear();
       setState(() {
         _progressVisible = true;
       });
-      Map user = await SharedData().getUser();
-      Map data = await HttpController().post(getVendorSponsoredPlansUrl,{
-        'token': '\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu'
-      
-      });
-      setState(() {
-        _progressVisible = false;
-      });
+      http.Response res = await http.post(Uri.parse(getVendorSponsoredPlansUrl),
+          body: {
+            'token':
+                '\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu'
+          });
+      Map data = json.decode(res.body);
 
       if (data.isNotEmpty) {
         print(data);
         sponsoredPlanList = data['data'];
       }
+      setState(() {
+        _progressVisible = false;
+      });
     } catch (e) {
       print(e);
     }
@@ -51,7 +55,7 @@ bool _progressVisible =false;
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      progress:_progressVisible,
+      progress: _progressVisible,
       appBar: AppBar(
         elevation: 0,
         title: Text(
@@ -105,7 +109,8 @@ bool _progressVisible =false;
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20).copyWith(bottom: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20)
+                        .copyWith(bottom: 10),
                     child: Row(
                       children: [
                         Text(
@@ -154,18 +159,17 @@ bool _progressVisible =false;
                       ),
                     ),
                   ),
-                  sponsoredPlanList.length<=0 ? Center(child: Text('No plans fetched')): SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: 
-                      
-                     List<Widget>.generate(sponsoredPlanList.length,(int index){
-                        return PlanCardWidget();
-                      })
-                     
-                    ),
-                  ),
+                  sponsoredPlanList.length <= 0
+                      ? Center(child: Text('No plans fetched'))
+                      : SingleChildScrollView(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                              children: List<Widget>.generate(
+                                  sponsoredPlanList.length, (int index) {
+                            return PlanCardWidget(data: sponsoredPlanList[index],);
+                          })),
+                        ),
                 ],
               ),
             )
@@ -175,6 +179,3 @@ bool _progressVisible =false;
     );
   }
 }
-
-
-

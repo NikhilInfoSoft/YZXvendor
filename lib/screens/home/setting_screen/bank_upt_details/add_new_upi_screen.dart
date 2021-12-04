@@ -36,7 +36,7 @@ bool _progressVisible= false;
       });
 
       if (data.isNotEmpty) {
-        // print('>>data');
+        print('>>$data');
         setState(() {
           _upi.text="";
         });

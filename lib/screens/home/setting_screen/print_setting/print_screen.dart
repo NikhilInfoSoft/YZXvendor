@@ -33,18 +33,26 @@ class _PrintSettingScreenState extends State<PrintSettingScreen> {
         }
       });
       if (width == '' || height == '') {
-        Fluttertoast.showToast(msg: 'Please select proper category image..!!');
+        Fluttertoast.showToast(msg: 'Please enter valid data in fields..!!');
         return;
       }
+     
 
       setState(() {
         _progressVisible = true;
       });
-      Map user = await SharedData().getUser();
+      Map user = await SharedData().getUser(); 
+      print({
+        'vendorId': user['id'].toString(),
+        'vendorToken': user['token'].toString(),
+        'printSetting':finalPrintSetting,
+        'printReceiptWidth': width,
+        'printReceiptHeight': height,
+      });
       Map data = await HttpController().post(setPrintSettingUrl, {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
-        'printSetting': printSetting,
+        'printSetting': finalPrintSetting,
         'printReceiptWidth': width,
         'printReceiptHeight': height,
       });

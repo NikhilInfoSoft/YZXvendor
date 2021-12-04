@@ -35,6 +35,8 @@ class _TaxScreenState extends State<TaxScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
+      print(user);
+
       Map data = await HttpController().post(addTaxUrl, {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
@@ -62,6 +64,7 @@ class _TaxScreenState extends State<TaxScreen> {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
+      print(user);
       Map data = await HttpController().get(taxListUrl, body: {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),

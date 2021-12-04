@@ -4,12 +4,13 @@ class AppDropDownWidget extends StatefulWidget {
   final String hint;
   final List<String> list;
   final Function? changeChosen;
-
+  final String? chosen;
   const AppDropDownWidget({
     Key? key,
     required this.hint,
     required this.list,
     this.changeChosen,
+    this.chosen,
   }) : super(key: key);
 
   @override
@@ -18,26 +19,29 @@ class AppDropDownWidget extends StatefulWidget {
 
 class _AppDropDownWidgetState extends State<AppDropDownWidget> {
   String? _chosenValue;
-List<DropdownMenuItem<String>> dropDownList =[];
-  @override
-  void initState() {
-    super.initState();
-    if(widget.list.isNotEmpty)
-    _chosenValue = widget.list.first;
-     
-  }
+  List<DropdownMenuItem<String>> dropDownList = [];
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   print('editng');
+  //   if (widget.list.isNotEmpty) {
+  //     _chosenValue = widget.list.last;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    dropDownList =widget.list.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList();
+    _chosenValue = widget.chosen != null ? widget.chosen! : widget.list.first;
+
+    dropDownList = widget.list.map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(
+          value,
+          style: TextStyle(color: Colors.black),
+        ),
+      );
+    }).toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -59,7 +63,7 @@ List<DropdownMenuItem<String>> dropDownList =[];
         iconEnabledColor: Colors.black,
         isExpanded: true,
         underline: Container(),
-        items:dropDownList ,
+        items: dropDownList,
         hint: Text(
           widget.hint,
           style: TextStyle(

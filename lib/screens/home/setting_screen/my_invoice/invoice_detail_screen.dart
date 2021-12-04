@@ -1,17 +1,64 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
+import 'package:xyx_vendor/controller/httpController.dart';
+import 'package:xyx_vendor/controller/shared_data.dart';
+import 'package:xyx_vendor/controller/url.dart';
 
 class InvoiceDetailsScreen extends StatefulWidget {
-  const InvoiceDetailsScreen({Key? key}) : super(key: key);
-
+  const InvoiceDetailsScreen({Key? key, this.invoiceNumber}) : super(key: key);
+  final String? invoiceNumber;
   @override
   _InvoiceDetailsScreenState createState() => _InvoiceDetailsScreenState();
 }
 
 class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
+  bool _progressVisible = false;
+  Map invoiceDetail = {};
+
+  getInvoiceDetail(String invoiceNumber) async {
+    print(invoiceNumber);
+    try {
+      setState(() {
+        _progressVisible = true;
+      });
+      Map user = await SharedData().getUser();
+      Map data = await HttpController().post(getVendorInvoiceDetail, {
+        'vendorId': user['id'].toString(),
+        'vendorToken': user['token'].toString(),
+        'invoiceNumber': invoiceNumber,
+      });
+     
+      if (data.isNotEmpty) {
+        print(data);
+        if (data['response'] != null) {
+          invoiceDetail = data['response'][0];
+        }
+      }
+      setState(() {
+        _progressVisible = false;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.invoiceNumber != null) {
+      getInvoiceDetail(widget.invoiceNumber!);
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(invoiceDetail);
     return AppScaffold(
+      progress: _progressVisible,
       appBar: AppBar(
         title: Text(
           "My Invoices Detail",
@@ -32,7 +79,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               alignment: Alignment.center,
               child: Text(
-                "Invoice No. : #254682",
+                "Invoice No. : ${invoiceDetail['invoiceNumber']}",
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Color(0xff252733),
@@ -146,8 +193,9 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 60,),
-
+            SizedBox(
+              height: 60,
+            ),
             Container(
               height: 152,
               color: Color(0xfffafafa),
@@ -257,7 +305,9 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 40,),
+            SizedBox(
+              height: 40,
+            ),
             Container(
               height: 50,
               decoration: BoxDecoration(

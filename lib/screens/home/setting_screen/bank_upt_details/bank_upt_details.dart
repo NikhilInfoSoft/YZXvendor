@@ -43,6 +43,8 @@ class _BankUPIDetailsScreenState extends State<BankUPIDetailsScreen> {
       if (bankList.isNotEmpty && upiList.isNotEmpty) {
         _bankList=bankList['response'];
         _upiList=upiList['response'];
+        print(_upiList);
+        print(_bankList);
       }
     } catch (e) {
       print(e);
@@ -92,7 +94,7 @@ class _BankUPIDetailsScreenState extends State<BankUPIDetailsScreen> {
             ),
             
            
-           ...List<Widget>.generate(3,(i){
+           ...List<Widget>.generate(_bankList.length,(i){
 return Row(
               children: [
                 Radio(
@@ -106,7 +108,7 @@ return Row(
                   },
                 ),
                 Text(
-                  " Hdfc Bank",
+                  _bankList[i]['bankName'],
                   style: TextStyle(
                     color: Color(0xff666666),
                     fontSize: 16,
@@ -184,7 +186,7 @@ return Row(
             ),
            
            
-             ...List<Widget>.generate(2,(i){
+             ...List<Widget>.generate(_upiList.length,(i){
       return  Row(
               children: [
                 Radio(
@@ -198,7 +200,7 @@ return Row(
                   },
                 ),
                 Text(
-                  "Jonxyz@hdfc.com",
+                  _upiList[i]['upi'],
                   style: TextStyle(
                     color: Color(0xff666666),
                     fontSize: 16,

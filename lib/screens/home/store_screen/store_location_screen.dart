@@ -9,6 +9,8 @@ import 'package:xyx_vendor/controller/url.dart';
 import 'package:xyx_vendor/screens/home/home_screen/home_screen.dart';
 import 'package:xyx_vendor/screens/home/store_screen/widget/store_progress_widget.dart';
 
+import 'store_url_screen.dart';
+
 class StoreLocationScreen extends StatelessWidget {
   final bool create;
   const StoreLocationScreen({Key? key, this.create = false}) : super(key: key);
@@ -65,13 +67,14 @@ class _StoreLocationDesignState extends State<_StoreLocationDesign> {
       });
 
       if (data.isNotEmpty) {
+        print(data);
         if (widget.create) {
-          Navigator.pushAndRemoveUntil(
+          Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => StoreUrlScreen(),
             ),
-            (route) => false,
+            // (route) => false,
           );
         }
       }
@@ -207,22 +210,27 @@ class _StoreLocationDesignState extends State<_StoreLocationDesign> {
               alignment: Alignment.centerRight,
               child: Row(
                 children: [
-                  Container(
-                    width: 80,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Color(0xffe5e5e5),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "BACK",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xff523291),
-                          fontSize: 16,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w600,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0xffe5e5e5),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "BACK",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xff523291),
+                            fontSize: 16,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),

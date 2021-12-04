@@ -43,7 +43,6 @@ final List<Map<String, String>> listWidgetJson = [
     'widget': '''
 {"type":"ClipRRect","borderRadius":"8.0,8.0,8.0,8.0","clipBehavior":"antiAlias","child":{"type":"Container","alignment":"center","padding":null,"color":"ff523291","margin":null,"constraints":{"minWidth":222.0,"maxWidth":222.0,"minHeight":50.0,"maxHeight":50.0},"child":{"type":"Text","data":"ADD NEW PRODUCT","textAlign":"center","overflow":"ellipsis","maxLines":null,"semanticsLabel":null,"softWrap":null,"textDirection":"ltr","style":{"color":"ffffffff","debugLabel":null,"decoration":"none","fontSize":16.0,"fontFamily":"Inter","fontStyle":"normal","fontWeight":"w600"},"textScaleFactor":null}}}''',
   },
-
   {
     'widgetName': 'AddNewCategoryWidget',
     'widget': '''
@@ -231,12 +230,6 @@ class _SplashDesignState extends State<_SplashDesign> {
           ),
         );
       }
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => LocationPermissionScreen(),
-      //   ),
-      // );
     });
   }
 

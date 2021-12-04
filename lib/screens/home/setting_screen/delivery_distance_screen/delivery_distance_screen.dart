@@ -36,6 +36,7 @@ class _DeliveryDistanceScreenState extends State<DeliveryDistanceScreen> {
         'deliveryDistance': distance,
       });
       setState(() {
+        print(data);
         _progressVisible = false;
       });
     } catch (e) {

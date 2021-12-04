@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:xyx_vendor/screens/home/setting_screen/payout/payout_details_screen.dart';
 
 class PayoutItemWidget extends StatelessWidget {
-  const PayoutItemWidget({Key? key}) : super(key: key);
-
+  const PayoutItemWidget(
+      {Key? key, this.requestAmount, this.requestDate, this.requestStatus})
+      : super(key: key);
+final String? requestAmount;
+final String? requestDate;
+final String? requestStatus;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -33,7 +37,7 @@ class PayoutItemWidget extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "01-Aug-2021, 11.25 AM",
+                  requestDate!,
                   style: TextStyle(
                     color: Color(0xff929292),
                     fontSize: 12,
@@ -49,7 +53,7 @@ class PayoutItemWidget extends StatelessWidget {
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Text(
-                    "Approved",
+                    requestStatus =='0'?'Pending':requestStatus =='1'?'Accepted':'Rejected',
                     style: TextStyle(
                       color: Color(0xff00992a),
                       fontSize: 12,
@@ -64,7 +68,7 @@ class PayoutItemWidget extends StatelessWidget {
               height: 10,
             ),
             Text(
-              "1050.00",
+              requestAmount.toString(),
               style: TextStyle(
                 color: Color(0xff00992a),
                 fontSize: 16,

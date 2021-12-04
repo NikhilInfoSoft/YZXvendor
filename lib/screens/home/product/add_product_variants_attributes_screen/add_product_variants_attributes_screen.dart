@@ -10,10 +10,12 @@ class AddProductVariantsAttributesScreen extends StatefulWidget {
   const AddProductVariantsAttributesScreen({Key? key}) : super(key: key);
 
   @override
-  _AddProductVariantsAttributesScreenState createState() => _AddProductVariantsAttributesScreenState();
+  _AddProductVariantsAttributesScreenState createState() =>
+      _AddProductVariantsAttributesScreenState();
 }
 
-class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsAttributesScreen> {
+class _AddProductVariantsAttributesScreenState
+    extends State<AddProductVariantsAttributesScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -39,7 +41,7 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ),
                 Spacer(),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     showModalBottomSheet(
                       context: context,
                       backgroundColor: Colors.transparent,
@@ -52,7 +54,7 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                       color: Color(0xff523291),
                     ),
                     alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     child: Text(
                       "ADD",
                       textAlign: TextAlign.center,
@@ -67,14 +69,19 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ),
               ],
             ),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Color(0xffe7e7e7), width: 1, ),
+                border: Border.all(
+                  color: Color(0xffe7e7e7),
+                  width: 1,
+                ),
                 color: Colors.white,
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -101,7 +108,9 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                       )
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     children: [
                       Text(
@@ -113,7 +122,9 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(width: 20,),
+                      SizedBox(
+                        width: 20,
+                      ),
                       Text(
                         "1200",
                         style: TextStyle(
@@ -143,7 +154,7 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ),
                 Spacer(),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     showModalBottomSheet(
                       context: context,
                       backgroundColor: Colors.transparent,
@@ -156,7 +167,7 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                       color: Color(0xff523291),
                     ),
                     alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     child: Text(
                       "ADD",
                       textAlign: TextAlign.center,
@@ -171,14 +182,19 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ),
               ],
             ),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Color(0xffe7e7e7), width: 1, ),
+                border: Border.all(
+                  color: Color(0xffe7e7e7),
+                  width: 1,
+                ),
                 color: Colors.white,
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -192,7 +208,9 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                           color: Color(0xffff0000),
                         ),
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Text(
                         "Red",
                         style: TextStyle(
@@ -217,7 +235,6 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ],
               ),
             ),
-
             SizedBox(
               height: 20,
             ),
@@ -232,7 +249,7 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ),
                 Spacer(),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     showModalBottomSheet(
                       context: context,
                       backgroundColor: Colors.transparent,
@@ -245,7 +262,7 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                       color: Color(0xff523291),
                     ),
                     alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     child: Text(
                       "ADD",
                       textAlign: TextAlign.center,
@@ -260,18 +277,18 @@ class _AddProductVariantsAttributesScreenState extends State<AddProductVariantsA
                 ),
               ],
             ),
-
             SizedBox(
               height: 50,
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddProductFormScreen(),
-                  ),
-                );
+                Navigator.pop(context);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => AddProductFormScreen(),
+                //   ),
+                // );
               },
               child: Container(
                 height: 50,

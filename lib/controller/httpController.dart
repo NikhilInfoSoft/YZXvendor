@@ -23,7 +23,7 @@ class HttpController {
           url += keys[i] + '=' + body[keys[i]];
         }
       }
-
+      print(url);
       var response = await http.get(Uri.parse(url));
 
       if (debug) {
@@ -107,9 +107,14 @@ class HttpController {
         if (data.containsKey('message') && data['message'] != '') {
           Fluttertoast.showToast(msg: data['message']);
         }
-        return data['status'] == 1 ? data : {};
+        return data['status'] == 1 ||
+                data['status'] == 200 ||
+                data['status'] == 0
+            ? data
+            : {};
       }
     } catch (e) {
+      print(e);
       Fluttertoast.showToast(msg: 'Server Returned Invalid Response');
     }
 
@@ -167,12 +172,14 @@ class HttpController {
         }
       } else if (response.body != '') {
         Map data = jsonDecode(response.body);
+        print('http>>$data');
         if (data.containsKey('message') && data['message'] != '') {
           Fluttertoast.showToast(msg: data['message']);
         }
         return data['status'] == 1 ? data : {};
       }
     } catch (e) {
+      print(e);
       Fluttertoast.showToast(msg: 'Server Returned Invalid Response');
     }
 

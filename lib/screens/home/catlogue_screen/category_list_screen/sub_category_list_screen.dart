@@ -11,7 +11,9 @@ import 'package:xyx_vendor/screens/home/catlogue_screen/category_list_screen/wid
 
 class SubCategoryListScreen extends StatefulWidget {
   final String category;
-  const SubCategoryListScreen({Key? key, required this.category})
+  final List categoryList;
+  const SubCategoryListScreen(
+      {Key? key, required this.category, required this.categoryList})
       : super(key: key);
 
   @override
@@ -34,16 +36,20 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
       });
+
+      if (data.isNotEmpty) {
+        print(widget.category);
+        for (var item in data['response']) {
+          if (item['categoryId'].toString() ==
+              widget.category) if (!_categoryList.contains(item)) {
+            _categoryList.add(item);
+          }
+        }
+        print(_categoryList);
+      }
       setState(() {
         _progressVisible = false;
       });
-
-      if (data.isNotEmpty) {
-        for (var item in data['response']) {
-          if (item['categoryId'].toString() == widget.category)
-            _categoryList.add(item);
-        }
-      }
     } catch (e) {
       print(e);
     }
@@ -53,6 +59,33 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
   void initState() {
     super.initState();
     _data();
+  }
+
+  Future<void> delete(String id) async {
+    try {
+      setState(() {
+        _progressVisible = true;
+      });
+      Map data;
+      Map user = await SharedData().getUser();
+
+      data = await HttpController().post(deleteSubCategoryUrl, {
+        'vendorId': user['id'].toString(),
+        'vendorToken': user['token'].toString(),
+        'subCategoryId': id
+      });
+
+      setState(() {
+        _progressVisible = false;
+      });
+
+      if (data.isNotEmpty) {
+        _categoryList = data['response'];
+        print(data);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -70,81 +103,84 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
           ),
         ),
       ),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            ListView(
-              shrinkWrap: true,
-              children: List.generate(_categoryList.length, (index) {
-                return _categoryTile(
-                  _categoryList[index]['subCategoryId'].toString(),
-                  _categoryList[index]['subCategoryName'].toString(),
-                  _categoryList[index]['subCategoryImage'].toString(),
-                  _categoryList[index]['categoryName'].toString(),
-                );
-              }),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Center(
-              child: GestureDetector(
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddSubCategoryScreen(
-                        categoryList: _categoryList,
+      child: _categoryList.isEmpty
+          ? Center(child: Text('No Sub Categories Add From Category Screen'))
+          : Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListView(
+                    shrinkWrap: true,
+                    children: List.generate(_categoryList.length, (index) {
+                      return _categoryTile(
+                        _categoryList[index]['subCategoryId'].toString(),
+                        _categoryList[index]['subCategoryName'].toString(),
+                        _categoryList[index]['subCategoryImage'].toString(),
+                        _categoryList[index]['categoryName'].toString(),
+                        delete,
+                        widget.categoryList,
+                      );
+                    }),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  if (_categoryList.isNotEmpty)
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          print(_categoryList);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddSubCategoryScreen(
+                                categoryList: widget.categoryList,
+                                edit: false,
+                              ),
+                            ),
+                          );
+                          // _data();
+                        },
+                        child: Container(
+                          width: 222,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x1e000000),
+                                blurRadius: 12,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                            color: Color(0xff523291),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "ADD NEW SUB CATEGORY",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  );
-                  _data();
-                },
-                child: Container(
-                  width: 222,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x1e000000),
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                    color: Color(0xff523291),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "ADD NEW SUB CATEGORY",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _categoryTile(
-    String id,
-    String name,
-    String image,
-    String category,
-  ) {
+  Widget _categoryTile(String id, String name, String image, String category,
+      Function(String id) delete, List categoryList) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       margin: EdgeInsets.symmetric(vertical: 5),
@@ -189,10 +225,21 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
                     Spacer(),
                     GestureDetector(
                       onTap: () {
+                        print(id);
                         showModalBottomSheet(
                           context: context,
                           backgroundColor: Colors.transparent,
-                          builder: (context) => MenuWidget(),
+                          builder: (context) => MenuWidget(
+                            category: false,
+                            categoryList: categoryList,
+                            id: id,
+                            delete: delete,
+                            data: {
+                              'subCategoryName': name,
+                              'subCategoryImage': image,
+                              "category": category,
+                            },
+                          ),
                         );
                       },
                       child: Container(

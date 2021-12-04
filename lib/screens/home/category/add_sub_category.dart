@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:xyx_vendor/common/widget/app_droupdown_widget.dart';
 import 'package:xyx_vendor/common/widget/app_edit_text_widget.dart';
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
@@ -12,12 +14,19 @@ import 'package:xyx_vendor/controller/url.dart';
 import 'package:xyx_vendor/screens/home/category/widget/menu_widget.dart';
 import 'package:xyx_vendor/screens/home/store_screen/widget/image_selected_widget.dart';
 import 'package:xyx_vendor/screens/home/store_screen/widget/image_selection_widget.dart';
+import 'package:http/http.dart' as http;
 
 class AddSubCategoryScreen extends StatefulWidget {
   final List categoryList;
+  final bool edit;
+  final String id;
+  final Map? data;
   const AddSubCategoryScreen({
     Key? key,
+    required this.edit,
     required this.categoryList,
+    this.id = '',
+    this.data,
   }) : super(key: key);
 
   @override
@@ -25,10 +34,11 @@ class AddSubCategoryScreen extends StatefulWidget {
 }
 
 class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
-  String _choosen = '';
+  String? _choosen;
   bool _progressVisible = false;
   ImagePicker _picker = ImagePicker();
   File? sourceFile;
+  String? _subCategory;
   TextEditingController _name = TextEditingController();
 
   _imagePicker() async {
@@ -58,7 +68,6 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
       for (var item in widget.categoryList) {
         if (item['categoryName'] == _choosen) _category = item['categoryId'];
       }
-
       if (name == '') {
         Fluttertoast.showToast(msg: 'Please fill all the fields..!!');
         return;
@@ -93,10 +102,78 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
     }
   }
 
+  _update() async {
+    try {
+      var name = _name.text;
+      int _category = 0;
+      for (var item in widget.categoryList) {
+        if (item['categoryName'] == _choosen) _category = item['categoryId'];
+      }
+      if (name == '') {
+        Fluttertoast.showToast(msg: 'Please fill all the fields..!!');
+        return;
+      } else if (sourceFile == null) {
+        Fluttertoast.showToast(msg: 'Please select proper category image..!!');
+        return;
+      }
+
+      setState(() {
+        _progressVisible = true;
+      });
+      Map user = await SharedData().getUser();
+      Map data = await HttpController().multiPart(updateSubCategoryUrl, {
+        'vendorId': user['id'].toString(),
+        'vendorToken': user['token'].toString(),
+        'subCategoryId': widget.id,
+        'categoryId': _category.toString(),
+        'subCategoryName': name,
+        'subCategoryImage': sourceFile,
+      });
+      setState(() {
+        _progressVisible = false;
+      });
+
+      if (data.isNotEmpty) {
+        setState(() {
+          sourceFile = null;
+          _name.text = '';
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> urlToFile(String imageUrl) async {
+    setState(() {
+      _progressVisible = true;
+    });
+    var rng = new Random();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File file = new File('$tempPath' + (rng.nextInt(100)).toString() + '.jpg');
+    http.Response response = await http.get(Uri.parse(imageUrl));
+
+    await file.writeAsBytes(response.bodyBytes);
+
+    setState(() {
+      _progressVisible = false;
+      _name.text = widget.data!['subCategoryName'];
+      sourceFile = file;
+      _choosen = widget.data!['category'];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _choosen = widget.categoryList.first['categoryName'];
+    if (widget.edit && widget.data != null) {
+      urlToFile(widget.data!['subCategoryImage']);
+    } else {
+      _choosen = widget.categoryList.first['categoryName'];
+    }
+
+    print(widget.categoryList);
   }
 
   @override
@@ -105,7 +182,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
       progress: _progressVisible,
       appBar: AppBar(
         title: Text(
-          "Add Sub-Category",
+          widget.edit ? "Edit Sub-Category" : "Add Sub-Category",
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -149,9 +226,12 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
             AppDropDownWidget(
               hint: '',
               list: List.generate(widget.categoryList.length, (index) {
+                print(_choosen);
                 return widget.categoryList[index]['categoryName'];
               }),
+              chosen: _choosen,
               changeChosen: (value) {
+                print(value);
                 setState(() {
                   _choosen = value;
                 });
@@ -176,7 +256,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
             ),
             Spacer(),
             GestureDetector(
-              onTap: _create,
+              onTap: widget.edit ? _update : _create,
               child: Container(
                 width: 312,
                 height: 50,
@@ -186,7 +266,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  "CREATE SUB CATEGORY",
+                  widget.edit ? "UPDATE SUB CATEGORY" : "CREATE SUB CATEGORY",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

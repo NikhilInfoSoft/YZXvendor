@@ -65,24 +65,28 @@ _updateStoreImage() async {
         _progressVisible = true;
       });
       Map user = await SharedData().getUser();
+      print(user);
       Map data = await HttpController().multiPart(updateStoreImagesUrl, {
         'vendorId': user['id'].toString(),
         'vendorToken': user['token'].toString(),
         'storeWebLogo':webLogo,
         'storeAppLogo':appLogo,
       });
-      setState(() {
+      
+    
+      if (data.isNotEmpty) {
+        print(data);
+        // setState(() {
+          
+        // });
+      }
+        setState(() {
+          
+          webLogo = null;
+          appLogo = null;
         _progressVisible = false;
       });
 
-      if (data.isNotEmpty) {
-        
-        setState(() {
-          webLogo = null;
-          appLogo = null;
-          
-        });
-      }
     } catch (e) {
       print(e);
     }

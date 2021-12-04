@@ -8,6 +8,7 @@ import 'package:xyx_vendor/controller/url.dart';
 import 'package:xyx_vendor/screens/authantication/otp_screen/otp_sreen.dart';
 import 'package:xyx_vendor/screens/authantication/sign_up_screen/signup_screen.dart';
 import 'package:xyx_vendor/screens/authantication/splash_screen/splash_screen.dart';
+import 'package:xyx_vendor/screens/home/home_screen/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -54,7 +55,14 @@ class _LoginDesignState extends State<_LoginDesign> {
       });
 
       if (data.isNotEmpty) {
-        print(data);
+        if (data['status'] == 1) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ),
+          );
+        }
       }
     } catch (e) {
       print(e);

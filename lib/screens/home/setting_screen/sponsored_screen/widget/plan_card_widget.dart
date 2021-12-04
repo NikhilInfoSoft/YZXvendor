@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'plan_click_dialog.dart';
 
 class PlanCardWidget extends StatefulWidget {
-  const PlanCardWidget({Key? key}) : super(key: key);
-
+  const PlanCardWidget({Key? key,this.data}) : super(key: key);
+final Map? data;
   @override
   _PlanCardWidgetState createState() => _PlanCardWidgetState();
 }
@@ -53,7 +53,7 @@ class _PlanCardWidgetState extends State<PlanCardWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  "Sponsored Plan",
+                  'Sponsored Plan',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
@@ -63,7 +63,7 @@ class _PlanCardWidgetState extends State<PlanCardWidget> {
                   ),
                 ),
                 Text(
-                  "599.00/Month",
+                  '${widget.data!['price'].toString()}.00',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -76,7 +76,7 @@ class _PlanCardWidgetState extends State<PlanCardWidget> {
             ),
           ),
           Text(
-            "Lorem ipsum dolor\nsit ame consetur \nadipiscing elit\nEt in id \nnisl vitae",
+            widget.data!['description'],
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xff666666),
