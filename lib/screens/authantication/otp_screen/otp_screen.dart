@@ -78,8 +78,8 @@ class _OTPDesignState extends State<_OTPDesign> {
       print(widget.vendorId);
       print(widget.vendorToken);
       Map data = await HttpController().post(otpVerificationUrl, {
-        // 'vendorId': widget.vendorId,
-        // 'vendorToken': widget.vendorToken,
+        'vendorId': widget.vendorId,
+        'vendorToken': widget.vendorToken,
         'vendorOtp': otp,
       });
 

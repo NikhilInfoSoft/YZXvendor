@@ -51,13 +51,15 @@ final String getCouponsUrl = mainUrl + 'get-coupons'; //error
 final String getFaqUrl = mainUrl + 'get-faq'; //error
 final String getVendorInvoiceDetail = mainUrl + 'getvendorinvoicedetails';
 final String getVendorInvoices = mainUrl + 'getvendorinvoices';
-final String getVendorProductsUrl = mainUrl + 'getvendorproducts';
+final String getVendorProductsUrl = mainUrl + 'getvendorproduct s';
 final String deleteCategoryUrl = mainUrl + 'deletecategory';
 final String deleteSubCategoryUrl = mainUrl + 'deletesubcategory';
 
 final String updateSubCategoryUrl = mainUrl + 'editsubcategory';
 
+final String checkDomainUrl = mainUrl + 'checkDomain';
 
+final String getMessengerSettingsUrl = mainUrl + "get-msnger-settings";
 
 //***Working API ***//
 // Vendor Sign Up

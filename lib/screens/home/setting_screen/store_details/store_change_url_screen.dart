@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xyx_vendor/common/app_colors.dart';
 import 'package:xyx_vendor/common/widget/app_edit_text_widget.dart';
 import 'package:xyx_vendor/common/widget/app_scaffold.dart';
+import 'package:xyx_vendor/controller/httpController.dart';
+import 'package:xyx_vendor/controller/shared_data.dart';
+import 'package:xyx_vendor/controller/url.dart';
 
 class StoreChangeUrlScreen extends StatelessWidget {
   const StoreChangeUrlScreen({Key? key}) : super(key: key);
@@ -22,9 +26,49 @@ class _StoreUrlDesign extends StatefulWidget {
 class _StoreUrlDesignState extends State<_StoreUrlDesign> {
   String selectedRadio = "";
 
+  TextEditingController _domainController = TextEditingController();
+  TextEditingController _extensionController = TextEditingController();
+  bool _progressVisible = false;
+
+  _checkDomain() async {
+    try {
+      var name = _domainController.text;
+
+      if (name == '') {
+        Fluttertoast.showToast(msg: 'Please fill all the fields..!!');
+        return;
+      }
+
+      setState(() {
+        _progressVisible = true;
+      });
+      var data = await HttpController().post(checkDomainUrl, {
+        'token':
+            "\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu",
+        "domainName": name + _extensionController.text,
+      });
+
+      // Navigator.pop(context);
+      if (data.isNotEmpty) {
+        print(data);
+        // setState(() {
+        //   sourceFile = null;
+        //   _name.text = '';
+        // });
+      }
+
+      setState(() {
+        _progressVisible = false;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      progress: _progressVisible,
       appBar: AppBar(
         title: Text(
           "Change URL",
@@ -83,32 +127,36 @@ class _StoreUrlDesignState extends State<_StoreUrlDesign> {
                 children: [
                   Expanded(
                     child: AppEditTextField(
+                      // controller: _domainController,
                       hintStyle: "Search",
                     ),
                   ),
                   SizedBox(
                     width: 10,
                   ),
-                  Container(
-                    height: 50,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Color(0xffe7e7e7),
-                        width: 1,
+                  GestureDetector(
+                    onTap:(){},
+                    child: Container(
+                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Color(0xffe7e7e7),
+                          width: 1,
+                        ),
+                        color: Color(0xff523291),
                       ),
-                      color: Color(0xff523291),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Check\nAvailability",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Check\nAvailability",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   )
@@ -291,6 +339,7 @@ class _StoreUrlDesignState extends State<_StoreUrlDesign> {
                           ),
                         ),
                         AppEditTextField(
+                          controller: _domainController,
                           hintStyle: "Enter here",
                         ),
                       ],
@@ -313,6 +362,7 @@ class _StoreUrlDesignState extends State<_StoreUrlDesign> {
                           ),
                         ),
                         AppEditTextField(
+                          controller: _extensionController,
                           hintStyle: ".com",
                         ),
                       ],
@@ -323,25 +373,28 @@ class _StoreUrlDesignState extends State<_StoreUrlDesign> {
               SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Color(0xff523291),
-                ),
-                child: Center(
-                  child: Text(
-                    "CHECK AVAILABILITY",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w600,
+              GestureDetector(
+                onTap: _checkDomain,
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0xff523291),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "CHECK AVAILABILITY",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              )
             },
           ],
         ),

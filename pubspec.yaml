@@ -26,6 +26,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_localizations:
     sdk: flutter
+  webview_flutter: ^2.1.1
   fluttertoast: ^8.0.8
   intl: 0.17.0
   pin_code_fields: ^7.3.0

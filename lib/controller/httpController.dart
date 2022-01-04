@@ -103,15 +103,20 @@ class HttpController {
           Fluttertoast.showToast(msg: 'Internal Server Error');
         }
       } else if (response.body != '') {
-        Map data = jsonDecode(response.body);
-        if (data.containsKey('message') && data['message'] != '') {
-          Fluttertoast.showToast(msg: data['message']);
+        var data = jsonDecode(response.body);
+        // print(data);
+
+        if (data is Map) {
+          if (data.containsKey('message') && data['message'] != '') {
+            Fluttertoast.showToast(msg: data['message']);
+          }
         }
-        return data['status'] == 1 ||
+
+        return   data is List ?{'domain':data}: data['status'] == 1 ||
                 data['status'] == 200 ||
                 data['status'] == 0
             ? data
-            : {};
+            :{};
       }
     } catch (e) {
       print(e);

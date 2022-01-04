@@ -7,6 +7,7 @@ import 'package:xyx_vendor/common/widget/app_scaffold.dart';
 // import 'package:xyx_vendor/controller/shared_data.dart';
 import 'package:xyx_vendor/controller/url.dart';
 import 'package:http/http.dart' as http;
+import 'package:xyx_vendor/screens/home/profile_screen/help_support_screen/chat_webview.dart';
 
 class HelpSupportScreen extends StatefulWidget {
   const HelpSupportScreen({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class HelpSupportScreen extends StatefulWidget {
 
 class _HelpSupportScreenState extends State<HelpSupportScreen> {
   bool _progressVisible = false;
-  bool chat = false;
+  // bool chat = false;
   _data() async {
     try {
       faq.clear();
@@ -33,7 +34,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
       // print('''\$2y\$10\$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu''');
 
       if (dat.isNotEmpty) {
-        print(dat);
+        // print(dat);
         faq = dat;
       }
       setState(() {
@@ -112,16 +113,18 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                     height: 40,
                   ),
                   // if (chat)
-                    // Tawk(
-                    //   directChatLink: '',
-                    //   visitor: TawkVisitor(),
-                    // ),
+                  // Tawk(
+                  //   directChatLink: '',
+                  //   visitor: TawkVisitor(),
+                  // ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        chat = !chat;
-                      });
-                      print('tawk');
+                      // setState(() {
+                      //   chat = !chat;
+                      // });
+                      // print('tawk');
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => ChatWebView()));
                     },
                     child: Container(
                       height: 50,
